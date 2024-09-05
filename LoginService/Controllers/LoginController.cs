@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using LoginService.Constants;
 using LoginService.Services;
 using LoginService.Services.Notifications;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LoginService.Controllers
 {
@@ -18,8 +19,9 @@ namespace LoginService.Controllers
             {
                 BadRequest(Constants.Constants.INVALID_CREDENTIALS);
             }
-            return Ok(autentication.token);
+            return Ok(@$"Token:{ autentication.token}");
         }
+
         [HttpPut("ResetPassword")]
         public IActionResult ResetPassword(string userName, string newPassword)
         {

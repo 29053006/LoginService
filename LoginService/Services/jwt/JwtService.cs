@@ -12,14 +12,17 @@ namespace LoginService.Services.jwt
         public string GenerationToken(UserModel infoUser)
         {
             var key = _configurations.getSetting("JwtSettings:Key");
+            var host = _configurations.getSetting("Api.Root");
 
             var keyBytes = Encoding.ASCII.GetBytes(key);
 
             var claims = new ClaimsIdentity();
 
-            claims.AddClaim(
-                new Claim(ClaimTypes.NameIdentifier, infoUser.UserName)
-                );
+            claims.AddClaim( new Claim(ClaimTypes.NameIdentifier, host));
+            claims.AddClaim(new Claim("UserNme", infoUser.UserName));
+            claims.AddClaim(new Claim("UserId", infoUser.UserId.ToString()));
+            claims.AddClaim(new Claim("Email", infoUser.Email));
+            claims.AddClaim(new Claim("Rol", infoUser.RolName));
 
             var credentialsToken = new SigningCredentials(
                 new SymmetricSecurityKey(keyBytes),
