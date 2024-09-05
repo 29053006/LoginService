@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace LoginService.Connection
+namespace LoginService.Core.Conection
 {
     public class DapperContext
     {

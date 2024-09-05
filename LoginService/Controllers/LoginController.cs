@@ -13,23 +13,29 @@ namespace LoginService.Controllers
         [HttpPost("Login")]
         public IActionResult login(LoginDataModel login)
         {
-            MailModel mailModel = new MailModel();
-            _notifiServices.SendMail(mailModel);
-            if (!_loginServices.Authentication(login))
+            var autentication = _loginServices.Authentication(login);
+            if (autentication == null)
             {
                 BadRequest(Constants.Constants.INVALID_CREDENTIALS);
             }
-            return Ok();
+            return Ok(autentication.token);
         }
         [HttpPut("ResetPassword")]
-        public IActionResult ResetPassword(string userName,string newPassword)
+        public IActionResult ResetPassword(string userName, string newPassword)
         {
+           var mailModel = _loginServices.ValidateUser(userName);
 
+            if (!_notifiServices.SendMail(mailModel))
+            {
+                BadRequest(Constants.Constants.SEND_MAIL_FAILD);
+                return Ok();
+            }
+            _loginServices.ResetPassword(userName, newPassword);
             return Ok();
         }
 
         [HttpPost("UserRegistration")]
-        public IActionResult UserRegistration(LoginDataModel login)
+        public IActionResult UserRegistration(UserModel login)
         {
             _loginServices.RegistredUser(login);
             return Ok();

@@ -4,6 +4,6 @@ namespace LoginService.Services.Notifications
 {
     public interface INotifiServices
     {
-        public void SendMail(MailModel mail);
+        public bool SendMail(MailModel mail);
     }
 }

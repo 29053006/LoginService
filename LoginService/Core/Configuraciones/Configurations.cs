@@ -6,7 +6,7 @@ namespace LoginService.Core.Configuraciones
     {
         public string getSetting(string setting)
         {
-            return _configuration.GetSection(setting).Value ?? "";
+            return _configuration.GetSection(setting).Value;
         }
     }
 }

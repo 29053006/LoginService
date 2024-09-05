@@ -12,7 +12,7 @@ namespace LoginService.Services.Notifications
 
         string correoDestino = "notifiservicesdev356@gmail.com";
 
-        public void SendMail(MailModel mail)
+        public bool SendMail(MailModel mail)
         {
             try
             {
@@ -23,16 +23,13 @@ namespace LoginService.Services.Notifications
                 if (string.IsNullOrEmpty(fromMail) || string.IsNullOrEmpty(passwordMail))
                 {
                     Console.Write("Verificar el correo origen o la Contraseña.");
-                    return;
+                    return false;
                 }
                 if (string.IsNullOrEmpty(mail.TO))
                 {
                     Console.Write("El correo destino es obligatorio.");
-                    return;
+                    return false;
                 }
-
-               
-
 
                 MailMessage message = new MailMessage(fromMail, mail.TO, mail.Subject, mail.Body);
 
@@ -46,11 +43,12 @@ namespace LoginService.Services.Notifications
                 smtpClient.Credentials = new System.Net.NetworkCredential(fromMail, passwordMail);
                 smtpClient.Send(message);
                 smtpClient.Dispose();
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return;
+                return false;
             }
 
         }

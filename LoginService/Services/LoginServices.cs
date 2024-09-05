@@ -1,37 +1,39 @@
 ﻿using LoginService.Models;
 using LoginService.Repositories;
+using LoginService.Services.jwt;
 
 namespace LoginService.Services
 {
-    public class LoginServices(IRepositories _repositories) : ILoginServices
+    public class LoginServices(IRepositories _repositories, IJwtService _jwtService) : ILoginServices
     {
-        public bool Authentication(LoginDataModel login)
+        public LoginResultData Authentication(LoginDataModel login)
         {
             var response = _repositories.Authentication(login);
-            if (response == null)
+            var token = _jwtService.GenerationToken(response);
+            LoginResultData LoginResultData = new LoginResultData()
             {
-                return false;
-            }
-            GenerationToken(response);
-            return true;
+                token = token,
+                UserId = response.UserId,
+                UserName = response.UserName,
+                rolId = response.RolId, 
+                rolName = response.RolName,
+            };
+            return LoginResultData;
         }
-        public bool RegistredUser(LoginDataModel login)
+        public bool RegistredUser(UserModel login)
         {
             var response = _repositories.CreateUser(login);
 
             return true;
         }
-        public bool ResetPassword(string UserName, string NewPassword)
+        public bool ResetPassword(string userName, string newPassword)
         {
-            var response = _repositories.ResetPassword(UserName, NewPassword);
+            var response = _repositories.ResetPassword(userName, newPassword);
             return true;
         }
-        private string GenerationToken(UserResponse infoUser)
+        public MailModel ValidateUser(string userName)
         {
-
-
-            return "";
+            return _repositories.ValidateUser(userName);
         }
-
     }
 }
