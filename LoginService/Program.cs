@@ -1,6 +1,8 @@
 using LoginService.Connection;
+using LoginService.Core.Configuraciones;
 using LoginService.Repositories;
 using LoginService.Services;
+using LoginService.Services.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<ILoginServices, LoginServices>();
 builder.Services.AddTransient<IRepositories, Repositories>();
+builder.Services.AddTransient<INotifiServices, NotifiServices>();
+builder.Services.AddTransient<IConfigurations, Configurations>();
 builder.Services.AddSingleton<DapperContext>();
 var app = builder.Build();
 

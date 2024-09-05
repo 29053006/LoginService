@@ -4,7 +4,8 @@ namespace LoginService.Repositories
 {
     public interface IRepositories
     {
-        public LoginResultData Authentication(LoginDataModel login);
+        public UserResponse Authentication(LoginDataModel login);
         public bool CreateUser(LoginDataModel login);
+        public bool ResetPassword(string UserName, string Password);
     }
 }

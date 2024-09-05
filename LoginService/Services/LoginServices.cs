@@ -18,11 +18,17 @@ namespace LoginService.Services
         public bool RegistredUser(LoginDataModel login)
         {
             var response = _repositories.CreateUser(login);
-            
+
             return true;
         }
-        private string GenerationToken(LoginResultData infoUser)
+        public bool ResetPassword(string UserName, string NewPassword)
         {
+            var response = _repositories.ResetPassword(UserName, NewPassword);
+            return true;
+        }
+        private string GenerationToken(UserResponse infoUser)
+        {
+
 
             return "";
         }
