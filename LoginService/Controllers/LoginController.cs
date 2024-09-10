@@ -4,12 +4,15 @@ using LoginService.Constants;
 using LoginService.Services;
 using LoginService.Services.Notifications;
 using Microsoft.AspNetCore.Authorization;
+using LoginService.Services.Hash;
 
 namespace LoginService.Controllers
 {
     [Route("User")]
     [ApiController]
-    public class LoginController(ILoginServices _loginServices, INotifiServices _notifiServices) : ControllerBase
+    public class LoginController(ILoginServices _loginServices,
+                                 INotifiServices _notifiServices,
+                                 IHashingServices _hashingServices) : ControllerBase
     {
         [HttpPost("Login")]
         public IActionResult login(LoginDataModel login)
@@ -25,7 +28,7 @@ namespace LoginService.Controllers
         [HttpPut("ResetPassword")]
         public IActionResult ResetPassword(string userName, string newPassword)
         {
-           var mailModel = _loginServices.ValidateUser(userName);
+            var mailModel = _loginServices.ValidateUser(userName);
 
             if (!_notifiServices.SendMail(mailModel))
             {
@@ -37,9 +40,11 @@ namespace LoginService.Controllers
         }
 
         [HttpPost("UserRegistration")]
-        public IActionResult UserRegistration(UserModel login)
+        public IActionResult UserRegistration(UserModel newUser)
         {
-            _loginServices.RegistredUser(login);
+            newUser.Password = _hashingServices.hashing(newUser.Password);
+
+            _loginServices.RegistredUser(newUser);
             return Ok();
         }
     }
