@@ -22,18 +22,19 @@ namespace LoginService.Repositories
                 return resultData.FirstOrDefault();
             }
         }
-        public bool CreateUser(UserModel login)
+        public bool CreateUser(UserModel newUser)
         {
             var query = ConstantsQuery.CREATE_USER;
 
             using (var connection = _dapperContext.CreateConection())
             {
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@UserName", login.UserName);
-                parameters.Add("@Password", login.Password);
-                parameters.Add("@Rol", login.RolId);
-                parameters.Add("@Email", login.Email);
-                parameters.Add("@PhoneNumber", login.PhoneNumber);
+                parameters.Add("@UserName", newUser.UserName);
+                parameters.Add("@Password", newUser.Password);
+                parameters.Add("@Email", newUser.Email);
+                parameters.Add("@PhoneNumber", newUser.PhoneNumber);
+                parameters.Add("@TwoStepVerification", newUser.TwoStepVerification);
+                parameters.Add("@ExpiratePassword", newUser.ExpiratePassword);
                 var resultData = connection.Query<UserModel>(sql: query, param: parameters, commandType: CommandType.Text, buffered: false);
 
                 return resultData != null ? true : false;

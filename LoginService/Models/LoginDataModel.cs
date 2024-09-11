@@ -10,6 +10,6 @@ namespace LoginService.Models
         public string userName { get; set; }
         [Required] 
         public string password { get; set; }
-        public string? rol {  get; set; }
     }
+
 }

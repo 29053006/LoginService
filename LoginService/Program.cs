@@ -6,6 +6,7 @@ using LoginService.Services.Hash;
 using LoginService.Services.jwt;
 using LoginService.Services.Notifications;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -24,6 +25,7 @@ builder.Services.AddTransient<INotifiServices, NotifiServices>();
 builder.Services.AddTransient<IConfigurations, Configurations>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IHashingServices, HashingServices>();
+builder.Services.AddTransient<PasswordHasher<string>, PasswordHasher<string>>();
 builder.Services.AddSingleton<DapperContext>();
 
 var key = builder.Configuration.GetValue<string>("JwtSettings:Key");

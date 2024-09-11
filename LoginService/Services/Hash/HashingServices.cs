@@ -1,31 +1,24 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace LoginService.Services.Hash
 {
-    public class HashingServices : IHashingServices
+    public class HashingServices(PasswordHasher<string> _passwordHasher) : IHashingServices
     {
         public string hashing(string str)
         {
-
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                // Convierte la cadena en una matriz de bytes
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
-
-                // Convierte los bytes en una cadena hexadecimal
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
+            return _passwordHasher.HashPassword(null, str);
 
         }
-        public bool verifyHash(string str)
+        public bool verifyHash(string hashedPassword, string providedPassword, DateTimeOffset ExpiratePassword)
         {
-            return false;
+
+            var result = _passwordHasher.VerifyHashedPassword(null, hashedPassword, providedPassword);
+            return result == PasswordVerificationResult.Success && ExpiratePassword > DateTimeOffset.UtcNow;
+
         }
+
     }
+
 }
