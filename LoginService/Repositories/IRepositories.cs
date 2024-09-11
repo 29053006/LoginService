@@ -7,6 +7,6 @@ namespace LoginService.Repositories
         public UserModel Authentication(LoginDataModel login);
         public bool CreateUser(UserModel login);
         public bool ResetPassword(string UserName, string Password);
-        public MailModel ValidateUser(string userName);
+        public UserModel ValidateUser(string userName);
     }
 }

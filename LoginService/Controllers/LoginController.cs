@@ -5,6 +5,8 @@ using LoginService.Services;
 using LoginService.Services.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using LoginService.Services.Hash;
+using LoginService.Core.CustomException;
+using System.Text.Json.Serialization;
 
 namespace LoginService.Controllers
 {
@@ -18,24 +20,33 @@ namespace LoginService.Controllers
         public IActionResult login(LoginDataModel login)
         {
             var autentication = _loginServices.Authentication(login);
-            if (autentication == null)
+
+            CustomException.NotNull(autentication, "Acceso denegado", 401);
+            responseLogin loginResultData = new responseLogin()
             {
-                BadRequest(Constants.Constants.INVALID_CREDENTIALS);
-            }
-            return Ok(@$"Token:{ autentication.token}");
+                rol = autentication.rolName,
+                token = autentication.token,
+                userName = autentication.UserName
+            };
+
+            return Ok(loginResultData);
+        }
+        [HttpPost("SendEmailResetPassword")]
+        public IActionResult SendEmailResetPassword(string userName)
+        {
+            var user = _loginServices.ValidateUser(userName);
+            CustomException.NotNull(user, string.Format(Constants.Constants.USER_NOT_EXIST, userName));
+            CustomException.Isvalid(_notifiServices.SendMail(user), Constants.Constants.SEND_MAIL_FAILD);
+
+            return Ok($"UserName: {userName}");
         }
 
         [HttpPut("ResetPassword")]
         public IActionResult ResetPassword(string userName, string newPassword)
         {
-            var mailModel = _loginServices.ValidateUser(userName);
+            var newPasswordHash = _hashingServices.hashing(newPassword);
+            _loginServices.ResetPassword(userName, newPasswordHash);
 
-            if (!_notifiServices.SendMail(mailModel))
-            {
-                BadRequest(Constants.Constants.SEND_MAIL_FAILD);
-                return Ok();
-            }
-            _loginServices.ResetPassword(userName, newPassword);
             return Ok();
         }
 

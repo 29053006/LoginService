@@ -13,17 +13,17 @@ namespace LoginService.Services
         public LoginResultData Authentication(LoginDataModel login)
         {
             var response = _repositories.Authentication(login);
-            bool verificarionPassword = _hashingServices.verifyHash(response.Password, login.password,response.da);
+            bool verificarionPassword = _hashingServices.verifyHash(response.Password, login.password, response.ExpiratePassword);
             if (!verificarionPassword)
             {
-                throw new Exception(Constants.Constants.INVALID_CREDENTIALS); 
+                throw new Exception(Constants.Constants.INVALID_CREDENTIALS);
             }
             var token = _jwtService.GenerationToken(response);
             LoginResultData LoginResultData = new LoginResultData()
             {
                 token = token,
                 UserName = response.UserName,
-                //rolName = response.RolName,
+                rolName = response.RolName,
             };
             return LoginResultData;
         }
@@ -39,7 +39,8 @@ namespace LoginService.Services
         }
         public MailModel ValidateUser(string userName)
         {
-            return _repositories.ValidateUser(userName);
+            var response = _repositories.ValidateUser(userName);
+            return new MailModel { TO = response.Email, Subject = "Reset Password"};
         }
     }
 }

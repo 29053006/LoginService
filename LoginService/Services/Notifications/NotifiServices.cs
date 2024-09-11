@@ -1,5 +1,7 @@
 ﻿using LoginService.Core.Configuraciones;
+using LoginService.Core.CustomException;
 using LoginService.Models;
+using System.Data;
 using System.Net.Mail;
 
 namespace LoginService.Services.Notifications
@@ -10,27 +12,17 @@ namespace LoginService.Services.Notifications
         private readonly string passwordMail = _configuration.getSetting("PasswordMail");
 
 
-        string correoDestino = "notifiservicesdev356@gmail.com";
 
         public bool SendMail(MailModel mail)
         {
-            try
+            if (!string.IsNullOrEmpty(mail.TO))
             {
-                mail.TO = correoDestino;
-                mail.Subject = "Email Prueba";
                 mail.Body = "<b>Body Correo<b>";
 
                 if (string.IsNullOrEmpty(fromMail) || string.IsNullOrEmpty(passwordMail))
                 {
-                    Console.Write("Verificar el correo origen o la Contraseña.");
-                    return false;
+                    Console.WriteLine("Verificar el correo origen o la Contraseña.");
                 }
-                if (string.IsNullOrEmpty(mail.TO))
-                {
-                    Console.Write("El correo destino es obligatorio.");
-                    return false;
-                }
-
                 MailMessage message = new MailMessage(fromMail, mail.TO, mail.Subject, mail.Body);
 
                 message.IsBodyHtml = true;
@@ -45,14 +37,8 @@ namespace LoginService.Services.Notifications
                 smtpClient.Dispose();
                 return true;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return false;
-            }
-
+            CustomException.IsNullOrEmpty(mail.TO, Constants.Constants.VERIFY_MAIL);
+            return false;
         }
-
-
     }
 }

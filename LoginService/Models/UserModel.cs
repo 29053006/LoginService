@@ -19,6 +19,7 @@ namespace LoginService.Models
         public string PhoneNumberConfirmed { get; set; } = string.Empty;
         public bool TwoStepVerification { get; set; } = false;
         public DateTimeOffset ExpiratePassword { get; set; } = DateTimeOffset.Now.AddMonths(3);
+        public string RolName { get; set; }
 
     }
 }

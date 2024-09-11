@@ -12,4 +12,11 @@ namespace LoginService.Models
         public string Error { get; set; } = string.Empty;
 
     }
+    public class responseLogin
+    {
+        public string rol {  get; set; }
+        public string token { get; set; }
+        public string userName { get; set; }
+
+    }
 }

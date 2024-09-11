@@ -5,6 +5,7 @@ using LoginService.Services;
 using LoginService.Services.Hash;
 using LoginService.Services.jwt;
 using LoginService.Services.Notifications;
+using MicroLogin.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -58,6 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<CustomExceptionNoHeadersMiddleware>();
 app.UseAuthentication();
 
 app.UseAuthorization();

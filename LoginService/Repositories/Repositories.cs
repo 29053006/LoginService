@@ -14,10 +14,7 @@ namespace LoginService.Repositories
 
             using (var connection = _dapperContext.CreateConection())
             {
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@UserName", login.userName);
-                parameters.Add("@Password", login.password);
-                var resultData = connection.Query<UserModel>(sql: query, param: parameters, commandType: CommandType.Text, buffered: false);
+                var resultData = connection.Query<UserModel>(sql: query, param: login, commandType: CommandType.Text, buffered: false);
 
                 return resultData.FirstOrDefault();
             }
@@ -28,16 +25,9 @@ namespace LoginService.Repositories
 
             using (var connection = _dapperContext.CreateConection())
             {
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@UserName", newUser.UserName);
-                parameters.Add("@Password", newUser.Password);
-                parameters.Add("@Email", newUser.Email);
-                parameters.Add("@PhoneNumber", newUser.PhoneNumber);
-                parameters.Add("@TwoStepVerification", newUser.TwoStepVerification);
-                parameters.Add("@ExpiratePassword", newUser.ExpiratePassword);
-                var resultData = connection.Query<UserModel>(sql: query, param: parameters, commandType: CommandType.Text, buffered: false);
+                var resultData = connection.Execute(sql: query, param: newUser, commandType: CommandType.Text);
 
-                return resultData != null ? true : false;
+                return resultData == 1 ? true : false;
             }
         }
         public bool ResetPassword(string UserName, string NewPassword)
@@ -49,12 +39,12 @@ namespace LoginService.Repositories
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@UserName", UserName);
                 parameters.Add("@NewPassword", NewPassword);
-                var resultData = connection.Query<bool>(sql: query, param: parameters, commandType: CommandType.Text, buffered: false);
+                var resultData = connection.Execute(sql: query, param: parameters, commandType: CommandType.Text);
 
-                return resultData != null ? true : false;
+                return resultData == 1 ? true : false;
             }
         }
-        public MailModel ValidateUser(string userName)
+        public UserModel ValidateUser(string userName)
         {
             var query = ConstantsQuery.VERIFY_USER;
 
@@ -62,7 +52,7 @@ namespace LoginService.Repositories
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@UserName", userName);
-                var resultData = connection.Query<MailModel>(sql: query, param: parameters, commandType: CommandType.Text, buffered: false);
+                var resultData = connection.Query<UserModel>(sql: query, param: parameters, commandType: CommandType.Text, buffered: false);
 
                 return resultData.FirstOrDefault();
             }

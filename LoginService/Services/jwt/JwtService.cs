@@ -21,7 +21,7 @@ namespace LoginService.Services.jwt
             claims.AddClaim( new Claim(ClaimTypes.NameIdentifier, host));
             claims.AddClaim(new Claim("UserNme", infoUser.UserName));
             claims.AddClaim(new Claim("Email", infoUser.Email));
-            //claims.AddClaim(new Claim("Rol", infoUser.RolName));
+            claims.AddClaim(new Claim("Rol", infoUser.RolName));
 
             var credentialsToken = new SigningCredentials(
                 new SymmetricSecurityKey(keyBytes),
