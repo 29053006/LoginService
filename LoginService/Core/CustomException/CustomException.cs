@@ -11,6 +11,13 @@ namespace LoginService.Core.CustomException
                 throw new CustomExceptionMessage(ErrorResponse(message), status);
             }
         }
+        public static void NotExist(bool assertion, string message, int status = 400)
+        {
+            if (assertion)
+            {
+                throw new CustomExceptionMessage(ErrorResponse(message), status);
+            }
+        }
         public static void Isvalid(bool assertion, string message, int status = 400)
         {
             if (!assertion)

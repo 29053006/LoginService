@@ -1,4 +1,5 @@
 ﻿using LoginService.Constants;
+using LoginService.Core.CustomException;
 using LoginService.Models;
 using LoginService.Repositories;
 using LoginService.Services.Hash;
@@ -29,7 +30,9 @@ namespace LoginService.Services
         }
         public bool RegistredUser(UserModel login)
         {
-            return _repositories.CreateUser(login);
+            var response = _repositories.CreateUser(login);
+            CustomException.NotExist(response, Constants.Constants.USER_EXIST);
+            return response;
 
         }
         public bool ResetPassword(string userName, string newPassword)
@@ -40,7 +43,7 @@ namespace LoginService.Services
         public MailModel ValidateUser(string userName)
         {
             var response = _repositories.ValidateUser(userName);
-            return new MailModel { TO = response.Email, Subject = "Reset Password"};
+            return new MailModel { TO = response.Email, Subject = "Reset Password" };
         }
     }
 }
