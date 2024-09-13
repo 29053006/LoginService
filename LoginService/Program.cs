@@ -30,23 +30,20 @@ builder.Services.AddTransient<PasswordHasher<string>, PasswordHasher<string>>();
 builder.Services.AddSingleton<DapperContext>();
 
 var key = builder.Configuration.GetValue<string>("JwtSettings:Key");
-var keyBytes = Encoding.ASCII.GetBytes(key);
+var keyBytes = Encoding.UTF8.GetBytes(key);
 
 builder.Services.AddAuthentication(config => {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
 }).AddJwtBearer(config => {
-    config.RequireHttpsMetadata = false;
-    config.SaveToken = true;
     config.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-        ValidateIssuer = true,
+        ValidateIssuer = false,
         ValidateAudience = false,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
+        ValidateLifetime = true
     };
 });
 

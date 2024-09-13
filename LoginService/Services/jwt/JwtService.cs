@@ -18,7 +18,7 @@ namespace LoginService.Services.jwt
 
             var claims = new ClaimsIdentity();
 
-            claims.AddClaim( new Claim(ClaimTypes.NameIdentifier, host));
+            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, host));
             claims.AddClaim(new Claim("UserNme", infoUser.UserName));
             claims.AddClaim(new Claim("Email", infoUser.Email));
             claims.AddClaim(new Claim("Rol", infoUser.RolName));
@@ -31,7 +31,7 @@ namespace LoginService.Services.jwt
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claims,
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = credentialsToken
             };
 
