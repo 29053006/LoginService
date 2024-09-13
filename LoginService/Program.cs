@@ -28,9 +28,9 @@ builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IHashingServices, HashingServices>();
 builder.Services.AddTransient<PasswordHasher<string>, PasswordHasher<string>>();
 builder.Services.AddSingleton<DapperContext>();
-
+var host = builder.Configuration.GetValue<string>("Api.Root");
 var key = builder.Configuration.GetValue<string>("JwtSettings:Key");
-var keyBytes = Encoding.UTF8.GetBytes(key);
+var keyBytes = Encoding.UTF8.GetBytes(key + host);
 
 builder.Services.AddAuthentication(config => {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

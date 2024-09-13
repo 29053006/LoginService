@@ -14,7 +14,7 @@ namespace LoginService.Services.jwt
             var key = _configurations.getSetting("JwtSettings:Key");
             var host = _configurations.getSetting("Api.Root");
 
-            var keyBytes = Encoding.ASCII.GetBytes(key);
+            var keyBytes = Encoding.ASCII.GetBytes(key + host);
 
             var claims = new ClaimsIdentity();
 
