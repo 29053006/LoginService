@@ -14,11 +14,11 @@ namespace LoginService.Services
         public LoginResultData Authentication(LoginDataModel login)
         {
             var response = _repositories.Authentication(login);
-            bool verificarionPassword = _hashingServices.verifyHash(response.Password, login.password, response.ExpiratePassword);
-            if (!verificarionPassword)
-            {
-                throw new Exception(Constants.Constants.INVALID_CREDENTIALS);
-            }
+            CustomException.NotNull(response, Constants.Constants.INVALID_CREDENTIALS, 401);
+            bool verificarionPassword = _hashingServices.verifyHash(response.Password ?? "", login.password, response.ExpiratePassword);
+            
+                CustomException.Exist(verificarionPassword, Constants.Constants.INVALID_CREDENTIALS, 401);
+            
             var token = _jwtService.GenerationToken(response);
             LoginResultData LoginResultData = new LoginResultData()
             {

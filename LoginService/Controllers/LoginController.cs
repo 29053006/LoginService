@@ -18,26 +18,17 @@ namespace LoginService.Controllers
         [HttpPost("Login")]
         public IActionResult login(LoginDataModel login)
         {
-            try
+            var autentication = _loginServices.Authentication(login);
+
+            CustomException.NotNull(autentication, "Acceso denegado", 401);
+            responseLogin loginResultData = new responseLogin()
             {
-                var autentication = _loginServices.Authentication(login);
+                rol = autentication.rolName,
+                token = autentication.token,
+                userName = autentication.UserName
+            };
 
-                CustomException.NotNull(autentication, "Acceso denegado", 401);
-                responseLogin loginResultData = new responseLogin()
-                {
-                    rol = autentication.rolName,
-                    token = autentication.token,
-                    userName = autentication.UserName
-                };
-
-                return Ok(loginResultData);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.ToString());
-                return BadRequest(ex);
-            }
-
+            return Ok(loginResultData);
         }
     }
 }
