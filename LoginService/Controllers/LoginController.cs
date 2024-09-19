@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using LoginService.Services.Hash;
 using LoginService.Core.CustomException;
 using System.Text.Json.Serialization;
+using Serilog;
 
 namespace LoginService.Controllers
 {
@@ -17,17 +18,26 @@ namespace LoginService.Controllers
         [HttpPost("Login")]
         public IActionResult login(LoginDataModel login)
         {
-            var autentication = _loginServices.Authentication(login);
-
-            CustomException.NotNull(autentication, "Acceso denegado", 401);
-            responseLogin loginResultData = new responseLogin()
+            try
             {
-                rol = autentication.rolName,
-                token = autentication.token,
-                userName = autentication.UserName
-            };
+                var autentication = _loginServices.Authentication(login);
 
-            return Ok(loginResultData);
+                CustomException.NotNull(autentication, "Acceso denegado", 401);
+                responseLogin loginResultData = new responseLogin()
+                {
+                    rol = autentication.rolName,
+                    token = autentication.token,
+                    userName = autentication.UserName
+                };
+
+                return Ok(loginResultData);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+                return BadRequest(ex);
+            }
+
         }
     }
 }

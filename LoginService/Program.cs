@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Serilog.Sinks.MSSqlServer;
+using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var connectionString = builder.Configuration.GetConnectionString("LogConnection");
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -28,6 +30,14 @@ builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IHashingServices, HashingServices>();
 builder.Services.AddTransient<PasswordHasher<string>, PasswordHasher<string>>();
 builder.Services.AddSingleton<DapperContext>();
+
+Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.MSSqlServer(
+                connectionString,
+                sinkOptions: new MSSqlServerSinkOptions { TableName = "Logs" })
+            .CreateLogger();
+
 var host = builder.Configuration.GetValue<string>("Api.Root");
 var key = builder.Configuration.GetValue<string>("JwtSettings:Key");
 var keyBytes = Encoding.UTF8.GetBytes(key + host);

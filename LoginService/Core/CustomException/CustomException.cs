@@ -1,4 +1,5 @@
 ﻿using LoginService.Models;
+using Serilog;
 
 namespace LoginService.Core.CustomException
 {
@@ -58,6 +59,7 @@ namespace LoginService.Core.CustomException
                         }
                 }
             };
+            Log.Information(messageError.ToString());
             return customErrorResponse;
         }
     }
